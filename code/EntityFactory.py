@@ -2,6 +2,7 @@ from code.Enemy import Enemy
 from code.LevelExit import LevelExit
 from code.Player import Player
 from code.PushableRock import PushableRock
+from code.SecretDoor import SecretDoor
 
 
 # from code.PushableRock import PushableRock
@@ -21,7 +22,7 @@ class EntityFactory:
         elif symbol == "V":
             return Enemy(position, scale=2, patrol_axis="V")
         elif symbol == "X":
-            return LevelExit(position, tile_size=self.tile_size)
-
+            return LevelExit(position, tile_size=self.tile_size) #correct?
+       
 
         return None

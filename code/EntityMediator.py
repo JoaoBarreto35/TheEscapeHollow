@@ -1,8 +1,11 @@
 import pygame
 from code.Player import Player
+from code.PressurePlate import PressurePlate
 from code.PushableRock import PushableRock
 from code.Enemy import Enemy
 from code.LevelExit import LevelExit
+from code.SecretDoor import SecretDoor
+
 
 class EntityMediator:
     def __init__(self, entities, wall_rects):

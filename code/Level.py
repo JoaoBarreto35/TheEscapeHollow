@@ -2,11 +2,15 @@ from xml.dom.minidom import ProcessingInstruction
 
 import pygame
 
-from code.Levels import LevelsName
+from code.Levels import LevelsName, LevelsEvents
 from code.MapBuilder import MapBuilder
 from code.EntityFactory import EntityFactory
 from code.EntityMediator import EntityMediator
 from code.Player import Player
+from code.PuzzleMediator import PuzzleMediator
+from code.TargetFactory import TargetFactory
+from code.TriggerFactory import TriggerFactory
+
 
 # 🎮 HUD: vidas e nome do level
 def load_heart_images(tile_size):
@@ -17,6 +21,7 @@ def load_heart_images(tile_size):
     overlay.fill((0, 0, 0, 120))
     dark.blit(overlay, (0, 0))
     return heart, dark
+
 
 def draw_hud(surface, font, player, level_name, heart_img, dark_heart, tile_size):
     # 🧭 Nome do level
@@ -29,6 +34,7 @@ def draw_hud(surface, font, player, level_name, heart_img, dark_heart, tile_size
         x = 10 + i * (tile_size + 5)
         y = 10 + title.get_height() + 5
         surface.blit(heart, (x, y))
+
 
 # ☠️ Tela de Game Over
 def draw_game_over(surface, font, width, height):
@@ -44,6 +50,7 @@ def draw_game_over(surface, font, width, height):
     surface.blit(retry, ((width - retry.get_width()) // 2, height // 2))
     surface.blit(menu, ((width - menu.get_width()) // 2, height // 2 + 40))
 
+
 # 🔁 Reset do mapa
 def reset_entities(current_map, tile_size):
     factory = EntityFactory(tile_size)
@@ -57,6 +64,30 @@ def reset_entities(current_map, tile_size):
                 entities.append(entity)
     return entities
 
+
+def reset_triggers(current_map, tile_size):
+    factory = TriggerFactory(tile_size)
+    triggers = []
+    for row_idx, row in enumerate(current_map):
+        for col_idx, cell in enumerate(row):
+            x = col_idx * tile_size
+            y = row_idx * tile_size
+            trigger = factory.create_trigger(cell, (x, y),LevelsEvents["level_2"][0]["trigger"])
+            if trigger:
+                triggers.append(trigger)
+    return triggers
+
+def reset_targets(current_map, tile_size):
+    factory = TargetFactory(tile_size)
+    targets = []
+    for row_idx, row in enumerate(current_map):
+        for col_idx, cell in enumerate(row):
+            x = col_idx * tile_size
+            y = row_idx * tile_size
+            target = factory.create_target(cell, (x, y),LevelsEvents["level_2"][0]["targets"])
+            if target:
+                targets.append(target)
+    return targets
 # 🚀 Execução do level
 def run_level(current_map, level_index=0):
     pygame.display.set_mode((1, 1))  # necessário para .convert()
@@ -83,8 +114,12 @@ def run_level(current_map, level_index=0):
     map_builder = MapBuilder(tile_size, "assets/wall.png", "assets/floor.png")
     wall_rects = map_builder.get_wall_rects(current_map)
 
+    triggers = reset_triggers(current_map, tile_size)
+    targets = reset_targets(current_map, tile_size)
     entities = reset_entities(current_map, tile_size)
-    mediator = EntityMediator(entities, wall_rects)
+    entity_mediator = EntityMediator(entities, wall_rects)
+    puzzle_mediator = PuzzleMediator(entities, triggers, targets)
+
     game_over = False
     level_name = LevelsName[level_index]
 
@@ -102,21 +137,25 @@ def run_level(current_map, level_index=0):
         map_builder.draw_map(window, current_map)
 
         if not game_over:
-            mediator.update_all()
+            entity_mediator.update_all()
+            puzzle_mediator.update_all()
 
             for entity in entities:
                 if isinstance(entity, Player) and entity.lives <= 0:
                     game_over = True
                     break
 
-            if mediator.level_complete:
+            if entity_mediator.level_complete:
                 return "next"
         else:
             draw_game_over(window, font, width, height)
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RETURN]:
                 entities = reset_entities(current_map, tile_size)
-                mediator = EntityMediator(entities, wall_rects)
+                triggers = reset_triggers(current_map, tile_size)
+                targets = reset_targets(current_map, tile_size)
+                entity_mediator = EntityMediator(entities, wall_rects)
+                puzzle_mediator = PuzzleMediator(entities, triggers, targets)
                 game_over = False
             elif keys[pygame.K_m]:
                 return "menu"
@@ -126,10 +165,18 @@ def run_level(current_map, level_index=0):
             if isinstance(entity, Player):
                 draw_hud(window, font, entity, level_name, heart_img, dark_heart, tile_size)
 
+        # 🔑 Triggers
+        for trigger in triggers:
+            for entity in entities:
+                trigger.update(entity)
+                trigger.draw(window)
+
+        for target in targets:
+            target.update()
+            target.draw(window)
 
         # 🎮 Entidades
         for entity in entities:
             entity.draw(window)
-
 
         pygame.display.update()

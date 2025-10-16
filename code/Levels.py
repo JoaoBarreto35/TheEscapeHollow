@@ -1,5 +1,17 @@
-# code/Levels.py
+LevelsEvents = {
+    "level_1": [],
+    "level_2": [
+
+        {
+            "trigger": (7, 6),
+            "targets": [(7, 7)]
+        }
+
+    ]
+}
+
 LevelsName = ['Escape the Hollow', 'Hey, wheres the door?']
+
 levels = {
     "level_1": [
 
