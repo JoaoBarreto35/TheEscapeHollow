@@ -1,10 +1,14 @@
 LevelsEvents = {
-    "level_1": [],
-    "level_2": [
+    "level_0": [],
+    "level_1": [
 
         {
-            "trigger": (7, 6),
-            "targets": [(7, 7)]
+            "trigger": (5, 13),
+            "targets": [(8, 9)]
+        },
+{
+            "trigger": (6, 13),
+            "targets": [(7, 9)]
         }
 
     ]
@@ -13,7 +17,7 @@ LevelsEvents = {
 LevelsName = ['Escape the Hollow', 'Hey, wheres the door?']
 
 levels = {
-    "level_1": [
+    "level_0": [
 
         "WWWWWWWWWWWWWWWWW",
         "WWWWWWWWWWWWWWWWW",
@@ -33,21 +37,23 @@ levels = {
         "WWWWWWWWWWWWWWWWW"
         "WWWWWWWWWWWWWWWWW",
     ],
-    "level_2": [
-        "WWWWWWWWWWWWWWW",
-        "W.....W.......W",
-        "W.....W.......W",
-        "W.....W.......W",
-        "W.....W.......W",
-        "W.....W.......W",
-        "W.....W.......W",
-        "W..P.LS.......W",
-        "W.....W.......W",
-        "W.....W.......W",
-        "W.....W.......W",
-        "W.....W.......W",
-        "W.....W.......W",
-        "W.....W.......W",
-        "WWWWWWWWWWWWWWW"
+    "level_1": [
+        "WWWWWWWWWWWWWWWWW",
+        "WWWWWWWWWWWWWWWWW",
+        "WW....W.W...V..WW",
+        "WW.R..W.......WWW",
+        "WWW..WW..WWW...WW",
+        "WW....V..W.W.L.WW",
+        "WW.......W.W.L.WW",
+        "WW.W.....S..W..WW",
+        "WW.WWW...SW..WWWW",
+        "WW...W....W....WW",
+        "WW...WW..WW....WW",
+        "WW....WWWWWWRWWWW",
+        "WWH....W.....WXWW",
+        "WW..WWWV...W.W.WW",
+        "WWP.WW.........WW",
+        "WWWWWWWWWWWWWWWWW"
+        "WWWWWWWWWWWWWWWWW"
     ]
 }

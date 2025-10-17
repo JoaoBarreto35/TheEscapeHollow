@@ -2,6 +2,8 @@ from xml.dom.minidom import ProcessingInstruction
 
 import pygame
 
+from code import Levels
+from code.SecretDoor import SecretDoor
 from code.Levels import LevelsName, LevelsEvents
 from code.MapBuilder import MapBuilder
 from code.EntityFactory import EntityFactory
@@ -65,31 +67,48 @@ def reset_entities(current_map, tile_size):
     return entities
 
 
-def reset_triggers(current_map, tile_size):
+def reset_triggers(current_map, tile_size, levelName):
     factory = TriggerFactory(tile_size)
     triggers = []
+
+    # Coleta todos os triggers definidos nos eventos
+    all_triggers = [event["trigger"] for event in LevelsEvents[levelName]]
+
     for row_idx, row in enumerate(current_map):
         for col_idx, cell in enumerate(row):
-            x = col_idx * tile_size
-            y = row_idx * tile_size
-            trigger = factory.create_trigger(cell, (x, y),LevelsEvents["level_2"][0]["trigger"])
-            if trigger:
-                triggers.append(trigger)
-    return triggers
+            if (row_idx, col_idx) in all_triggers:
+                x = col_idx * tile_size
+                y = row_idx * tile_size
+                trigger = factory.create_trigger(cell, (x, y), (row_idx, col_idx))
+                if trigger:
+                    triggers.append(trigger)
 
-def reset_targets(current_map, tile_size):
+    return triggers
+def reset_targets(current_map, tile_size,levelName):
     factory = TargetFactory(tile_size)
     targets = []
+
+    # Coleta todas as posições de targets definidas nos eventos
+    all_targets = set()
+    for event in LevelsEvents[levelName]:
+        for pos in event["targets"]:
+            all_targets.add(pos)
+
+    # Cria targets apenas nas posições definidas
     for row_idx, row in enumerate(current_map):
         for col_idx, cell in enumerate(row):
-            x = col_idx * tile_size
-            y = row_idx * tile_size
-            target = factory.create_target(cell, (x, y),LevelsEvents["level_2"][0]["targets"])
-            if target:
-                targets.append(target)
+            pos = (row_idx, col_idx)
+            if pos in all_targets:
+                x = col_idx * tile_size
+                y = row_idx * tile_size
+                target = factory.create_target(cell, (x, y), pos)
+                if target:
+                    targets.append(target)
+
     return targets
 # 🚀 Execução do level
 def run_level(current_map, level_index=0):
+
     pygame.display.set_mode((1, 1))  # necessário para .convert()
     pygame.mixer.init()
     pygame.mixer.music.load("assets/music/menu_theme.mp3")
@@ -114,11 +133,18 @@ def run_level(current_map, level_index=0):
     map_builder = MapBuilder(tile_size, "assets/wall.png", "assets/floor.png")
     wall_rects = map_builder.get_wall_rects(current_map)
 
-    triggers = reset_triggers(current_map, tile_size)
-    targets = reset_targets(current_map, tile_size)
+    triggers = reset_triggers(current_map, tile_size, f"level_{level_index}")
+    targets = reset_targets(current_map, tile_size,f"level_{level_index}")
     entities = reset_entities(current_map, tile_size)
     entity_mediator = EntityMediator(entities, wall_rects)
-    puzzle_mediator = PuzzleMediator(entities, triggers, targets)
+    puzzle_mediator = PuzzleMediator(entities, triggers, targets, f"level_{level_index}")
+
+
+
+    #adicionando  targets SecretDoor in wall_rects
+    for secret_door in targets:
+        if isinstance(secret_door, SecretDoor):
+            wall_rects.append(secret_door)
 
     game_over = False
     level_name = LevelsName[level_index]
@@ -152,10 +178,10 @@ def run_level(current_map, level_index=0):
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RETURN]:
                 entities = reset_entities(current_map, tile_size)
-                triggers = reset_triggers(current_map, tile_size)
-                targets = reset_targets(current_map, tile_size)
+                triggers = reset_triggers(current_map, tile_size, f"level_{level_index}")
+                targets = reset_targets(current_map, tile_size,f"level_{level_index}")
                 entity_mediator = EntityMediator(entities, wall_rects)
-                puzzle_mediator = PuzzleMediator(entities, triggers, targets)
+                puzzle_mediator = PuzzleMediator(entities, triggers, targets, f"level_{level_index}")
                 game_over = False
             elif keys[pygame.K_m]:
                 return "menu"
@@ -172,7 +198,7 @@ def run_level(current_map, level_index=0):
                 trigger.draw(window)
 
         for target in targets:
-            target.update()
+            target.update(dt)
             target.draw(window)
 
         # 🎮 Entidades

@@ -21,7 +21,7 @@ class MapBuilder:
                 if cell == "W":
                     surface.blit(self.wall, (x, y))
                 else:
-                    surface.blit(self.floor, (x, y))
+                        surface.blit(self.floor, (x, y))
 
     def get_wall_rects(self, level_map):
         wall_rects = []

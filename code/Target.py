@@ -10,6 +10,7 @@ class Target:
         self.position = pygame.Vector2(position)
         self.size = size
         self.image = pygame.image.load("assets/wall.png").convert()
+        self.image = pygame.transform.scale(self.image, (self.size, self.size))
         self.rect = self.image.get_rect(topleft=self.position)
         self.active = False
 
