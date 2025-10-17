@@ -11,6 +11,7 @@ damage_sound.set_volume(0.6)
 gameover_sound = pygame.mixer.Sound("assets/sfx/gameover.wav")
 gameover_sound.set_volume(0.6)
 
+
 class Player(Entity):
     def __init__(self, position, scale=2):
         raw_animations = load_player_spritesheet("assets/player_spritesheet.png")
@@ -68,6 +69,6 @@ class Player(Entity):
             gameover_sound.play()
             # talvez: pygame.mixer.music.stop()
             # ou: return "gameover"
-        #print(f"[DEBUG] Player perdeu uma vida! Vidas restantes: {self.lives}")
+        # print(f"[DEBUG] Player perdeu uma vida! Vidas restantes: {self.lives}")
         pygame.mixer.music.stop()
         damage_sound.play()

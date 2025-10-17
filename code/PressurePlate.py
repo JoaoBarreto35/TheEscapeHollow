@@ -27,10 +27,12 @@ class PressurePlate(Trigger):
         else:
             surface.blit(self.image_off, self.rect.topleft)
 
-    def update(self, entity):
-        if entity.rect.colliderect(self.rect):
-            self.is_pressed = True
-            return True
+    def update(self, entities):
+        self.is_pressed = False
+        for entity in entities:
+            if entity.rect.colliderect(self.rect):
+                self.is_pressed = True
+                break
 
         else:
             self.is_pressed = False

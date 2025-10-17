@@ -1,6 +1,5 @@
 import pygame
 from code.Player import Player
-from code.PressurePlate import PressurePlate
 from code.PushableRock import PushableRock
 from code.Enemy import Enemy
 from code.LevelExit import LevelExit
@@ -34,13 +33,16 @@ class EntityMediator:
                     if isinstance(other, PushableRock) and entity.rect.colliderect(other.rect):
                         entity.position = old_position
                         entity.rect.topleft = entity.position
-                        entity.reverse_direction()
+                        if isinstance(other, SecretDoor) and other.active:
+                            pass
+                        else:
+                            entity.reverse_direction()
 
             if isinstance(entity, Player):
                 for other in self.entities:
                     if isinstance(other, PushableRock):
                         if entity.rect.colliderect(other.rect):
-                            if keys[pygame.K_RCTRL]:
+                            if keys[pygame.K_SPACE]:
                                 pushed = other.try_push(entity.direction, self.wall_rects, self.entities)
 
                                 if not pushed:

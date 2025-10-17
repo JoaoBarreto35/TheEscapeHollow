@@ -2,7 +2,7 @@ import pygame
 from code.ImageLoader import load_player_spritesheet
 
 class Enemy:
-    def __init__(self, position, scale=2, patrol_axis="H"):
+    def __init__(self, position, scale=1.8, patrol_axis="H"):
         self.position = pygame.Vector2(position)
         self.speed = 2.5
         self.direction = "right" if patrol_axis == "H" else "down"

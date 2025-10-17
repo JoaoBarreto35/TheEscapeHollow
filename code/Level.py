@@ -12,6 +12,7 @@ from code.Player import Player
 from code.PuzzleMediator import PuzzleMediator
 from code.TargetFactory import TargetFactory
 from code.TriggerFactory import TriggerFactory
+from code.TutorialOverlay import TutorialOverlay
 
 
 # 🎮 HUD: vidas e nome do level
@@ -139,7 +140,7 @@ def run_level(current_map, level_index=0):
     entity_mediator = EntityMediator(entities, wall_rects)
     puzzle_mediator = PuzzleMediator(entities, triggers, targets, f"level_{level_index}")
 
-
+    tutorial = TutorialOverlay("assets/ui/tutorial.png", 3000, (width, height))
 
     #adicionando  targets SecretDoor in wall_rects
     for secret_door in targets:
@@ -193,9 +194,8 @@ def run_level(current_map, level_index=0):
 
         # 🔑 Triggers
         for trigger in triggers:
-            for entity in entities:
-                trigger.update(entity)
-                trigger.draw(window)
+            trigger.update(entities)
+            trigger.draw(window)
 
         for target in targets:
             target.update(dt)
@@ -204,5 +204,10 @@ def run_level(current_map, level_index=0):
         # 🎮 Entidades
         for entity in entities:
             entity.draw(window)
+
+        if level_index==0:
+            # tutorial overlay
+            tutorial.update()
+            tutorial.draw(window)
 
         pygame.display.update()
