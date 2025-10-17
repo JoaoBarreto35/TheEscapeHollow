@@ -5,33 +5,33 @@ from code.Menu import show_menu
 
 def start_game():
     pygame.init()
-
     choice = show_menu()
     if choice == "quit":
         pygame.quit()
         return
-    elif choice == "about":
-        show_about_screen()
-        choice = show_menu()
-        if choice == "quit":
-            pygame.quit()
-            return
 
     level_sequence = list(levels.keys())
     current_level_index = 0
+    player_lives = 3  # vidas persistentes
 
     while True:
         current_map = levels[level_sequence[current_level_index]]
-        result = run_level(current_map,current_level_index)
+        result = run_level(current_map, current_level_index, player_lives)
 
-        if result == "next":
+        if isinstance(result, tuple):
+            status, player_lives = result
+        else:
+            status = result
+
+        if status == "next":
             current_level_index = (current_level_index + 1) % len(level_sequence)
-        elif result == "quit":
-            break
-        elif result == "menu":
+        elif status == "menu":
             start_game()
+        elif status == "quit":
+            break
 
     pygame.quit()
+
 
 def show_about_screen():
     screen = pygame.display.set_mode((640, 480))

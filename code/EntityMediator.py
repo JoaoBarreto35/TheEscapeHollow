@@ -26,8 +26,6 @@ class EntityMediator:
                 if isinstance(entity, Enemy):
                     entity.reverse_direction()
 
-
-
             if isinstance(entity, Enemy):
                 for other in self.entities:
                     if isinstance(other, PushableRock) and entity.rect.colliderect(other.rect):
@@ -40,18 +38,15 @@ class EntityMediator:
 
             if isinstance(entity, Player):
                 for other in self.entities:
-                    if isinstance(other, PushableRock):
-                        if entity.rect.colliderect(other.rect):
-                            if keys[pygame.K_SPACE]:
-                                pushed = other.try_push(entity.direction, self.wall_rects, self.entities)
-
-                                if not pushed:
-                                    entity.position = old_position
-                                    entity.rect.topleft = entity.position
-                            else:
+                    if isinstance(other, PushableRock) and entity.rect.colliderect(other.rect):
+                        if keys[pygame.K_SPACE]:
+                            pushed = other.try_push(entity.direction, self.wall_rects, self.entities)
+                            if not pushed:
                                 entity.position = old_position
                                 entity.rect.topleft = entity.position
-
+                        else:
+                            entity.position = old_position
+                            entity.rect.topleft = entity.position
 
         if self.damage_cooldown > 0:
             self.damage_cooldown -= 1
