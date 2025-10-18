@@ -1,4 +1,4 @@
-from code.entities.entity_factory import EntityFactory
+from code.mechanics.entity_factory import EntityFactory
 from code.mechanics.trigger_factory import TriggerFactory
 from code.mechanics.target_factory import TargetFactory
 from code.data.levels import LevelsEvents

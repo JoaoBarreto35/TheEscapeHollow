@@ -4,12 +4,16 @@ LevelsEvents = {
 
         {
             "trigger": (5, 13),
-            "targets": [(8, 9)]
+            "targets": [(2, 8)]
         },
         {
             "trigger": (6, 13),
             "targets": [(7, 9)]
-        }
+        },
+{
+            "trigger": (4, 7),
+            "targets": [(3, 7)]
+        },
 
     ],
     "level_2": [
@@ -56,13 +60,13 @@ levels = {
     "level_1": [
         "WWWWWWWWWWWWWWWWW",
         "WWWWWWWWWWWWWWWWW",
-        "WW....W.W...V..WW",
-        "WW.R..W.......WWW",
-        "WWW..WW..WWW...WW",
-        "WW....V..W.W.L.WW",
+        "WW....WCS...V..WW",
+        "WW.R..WTW.....WWW",
+        "WWW..WWL.......WW",
+        "WW....V..WWW.L.WW",
         "WW.......W.W.L.WW",
         "WW.W.....S..W..WW",
-        "WW.WWW...SW..WWWW",
+        "WW.WWW....W..WWWW",
         "WW...W....W....WW",
         "WW...WW..WW....WW",
         "WW....WWWWWWRWWWW",

@@ -1,4 +1,6 @@
 from code.data.levels import LevelsEvents
+from code.settings import DeathReason
+from code.entities.player import Player
 
 
 class PuzzleMediator:
@@ -27,6 +29,13 @@ class PuzzleMediator:
                                     target.toggle(True)
                             break
 
+        # Verifica se o jogador caiu em um HoleTrap ativo
+        for entity in self.entities:
+            if isinstance(entity, Player):
+                for target in self.targets:
+                    if target.__class__.__name__ == "HoleTrap" and target.active:
+                        if entity.rect.colliderect(target.rect):
+                            entity.death_reason = DeathReason.HOLE
+                            entity.lives = 0
 
-        # Verifica colisão com portas fechadas
 

@@ -1,27 +1,43 @@
 import pygame
-
-from code.data.settings import ROCK_PUSH_SPEED
-
-stone_drag_sound = pygame.mixer.Sound("assets/sfx/stone_drag.wav")
-stone_drag_sound.set_volume(0.1)
+from typing import Tuple, Union
+from code.settings import ROCK_PUSH_SPEED
+from code.core.image_loader import load_image
 
 class PushableRock:
-    def __init__(self, position, size):
+    def __init__(self, position: Tuple[int, int], size: Union[int, Tuple[int, int]]):
         self.position = pygame.Vector2(position)
-        self.size = size
-        self.velocity = ROCK_PUSH_SPEED# mesma velocidade do player
-        self.image = pygame.image.load("assets/rock.png").convert()
-        self.image.set_colorkey(self.image.get_at((0, 0)))
-        self.image = pygame.transform.scale(self.image, (size, size))
+        self.size = self._normalize_size(size)
+        self.velocity = ROCK_PUSH_SPEED
+
+        self.image = load_image("assets/rock.png", self.size)
         self.rect = self.image.get_rect(topleft=self.position)
+
+        self.stone_drag_sound = self._load_sound("assets/sfx/stone_drag.wav", volume=0.1)
+
+    def _normalize_size(self, size: Union[int, Tuple[int, int]]) -> Tuple[int, int]:
+        if isinstance(size, int):
+            return (size, size)
+        elif isinstance(size, tuple) and len(size) == 2:
+            return size
+        else:
+            raise ValueError(f"[PushableRock] Tamanho inválido: {size}. Esperado int ou tupla (largura, altura)")
+
+    def _load_sound(self, path: str, volume: float = 1.0):
+        try:
+            sound = pygame.mixer.Sound(path)
+            sound.set_volume(volume)
+            return sound
+        except Exception as e:
+            print(f"[PushableRock] Erro ao carregar som: {path} → {e}")
+            return None
 
     def update(self):
         pass
 
-    def draw(self, surface):
+    def draw(self, surface: pygame.Surface):
         surface.blit(self.image, self.rect.topleft)
 
-    def try_push(self, direction, wall_rects, other_entities):
+    def try_push(self, direction: str, wall_rects, other_entities) -> bool:
         offset = pygame.Vector2(0, 0)
         if direction == "up":
             offset.y = -self.velocity
@@ -34,15 +50,15 @@ class PushableRock:
 
         new_rect = self.rect.move(offset)
 
-        # Verifica colisão com parede
+        # Colisão com parede
         if any(new_rect.colliderect(wall) for wall in wall_rects):
             return False
 
-        # Verifica colisão com outras rochas
+        # Colisão com outras rochas
         if any(new_rect.colliderect(e.rect) for e in other_entities if isinstance(e, PushableRock) and e != self):
             return False
 
-        # Verifica colisão com inimigos
+        # Colisão com inimigos
         from code.entities.enemy import Enemy
         if any(new_rect.colliderect(e.rect) for e in other_entities if isinstance(e, Enemy)):
             return False
@@ -51,6 +67,7 @@ class PushableRock:
         self.position += offset
         self.rect.topleft = self.position
 
-        if not stone_drag_sound.get_num_channels():  # evita tocar várias vezes
-            stone_drag_sound.play(0)
+        if self.stone_drag_sound and not self.stone_drag_sound.get_num_channels():
+            self.stone_drag_sound.play(0)
+
         return True

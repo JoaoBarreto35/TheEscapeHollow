@@ -1,30 +1,33 @@
 import pygame
 from code.entities.entity import Entity
-from code.core.image_loader import load_player_spritesheet
-from code.data.settings import PLAYER_NORMAL_SPEED
-
-# Carrega som de passo
-step_sound = pygame.mixer.Sound("assets/sfx/step.wav")
-step_sound.set_volume(0.03)
-damage_sound = pygame.mixer.Sound("assets/sfx/damage.wav")
-damage_sound.set_volume(0.6)
-gameover_sound = pygame.mixer.Sound("assets/sfx/gameover.wav")
-gameover_sound.set_volume(0.6)
+from code.core.image_loader import load_spritesheet
+from code.settings import PLAYER_NORMAL_SPEED, DeathReason
 
 
 class Player(Entity):
     def __init__(self, position, scale=2):
-        raw_animations = load_player_spritesheet("assets/player_spritesheet.png")
-        animations = {
-            direction: [pygame.transform.scale(frame, (frame.get_width() * scale, frame.get_height() * scale))
-                        for frame in frames]
-            for direction, frames in raw_animations.items()
-        }
+        animations = load_spritesheet("assets/player_spritesheet.png", frame_count=6, scale=scale)
         super().__init__(position, animations)
+
         self.speed = PLAYER_NORMAL_SPEED
         self.lives = 3
         self.step_timer = 0
         self.rect.topleft = position
+
+        self.step_sound = self._load_sound("assets/sfx/step.wav", volume=0.03)
+        self.damage_sound = self._load_sound("assets/sfx/damage.wav", volume=0.6)
+        self.gameover_sound = self._load_sound("assets/sfx/gameover.wav", volume=0.6)
+
+        self.death_reason = DeathReason.UNKNOWN
+
+    def _load_sound(self, path, volume=1.0):
+        try:
+            sound = pygame.mixer.Sound(path)
+            sound.set_volume(volume)
+            return sound
+        except Exception as e:
+            print(f"[Player] Erro ao carregar som: {path} → {e}")
+            return None
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -48,8 +51,8 @@ class Player(Entity):
             self.direction = "right"
             moving = True
 
-        if moving and now - self.step_timer > 200:
-            step_sound.play(0)
+        if moving and self.step_sound and now - self.step_timer > 200:
+            self.step_sound.play(0)
             self.step_timer = now
 
         self.rect.topleft = self.position
@@ -57,7 +60,8 @@ class Player(Entity):
 
     def take_damage(self):
         self.lives -= 1
-        if self.lives <= 0:
-            gameover_sound.play()
         pygame.mixer.music.stop()
-        damage_sound.play()
+        if self.lives <= 0 and self.gameover_sound:
+            self.gameover_sound.play()
+        elif self.damage_sound:
+            self.damage_sound.play()

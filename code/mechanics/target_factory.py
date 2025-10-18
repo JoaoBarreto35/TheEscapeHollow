@@ -1,5 +1,6 @@
 from typing import Tuple, List
 
+from code.entities.hole_trap import HoleTrap
 from code.entities.secret_door import SecretDoor
 
 
@@ -11,5 +12,6 @@ class TargetFactory:
 
         if symbol == "S":
             return SecretDoor(position, self.tile_size,targetMatriz)
-
+        elif symbol == "T":
+            return HoleTrap(position, self.tile_size,targetMatriz )
         return None

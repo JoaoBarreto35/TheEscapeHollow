@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from code.mechanics.pressure_plate import PressurePlate
+from code.triggers.pressure_plate import PressurePlate
 
 
 class TriggerFactory:

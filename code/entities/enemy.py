@@ -1,14 +1,14 @@
 import pygame
-from code.core.image_loader import load_player_spritesheet
+from code.core.image_loader import load_spritesheet
 
 class Enemy:
     def __init__(self, position, scale=1.8, patrol_axis="H"):
         self.position = pygame.Vector2(position)
         self.speed = 2.5
-        self.direction = "right" if patrol_axis == "H" else "down"
         self.axis = patrol_axis  # "H" ou "V"
+        self.direction = "right" if self.axis == "H" else "down"
 
-        self.frames = load_player_spritesheet("assets/enemy_spritesheet.png", scale)
+        self.frames = load_spritesheet("assets/enemy_spritesheet.png", frame_count=6, scale=scale)
         self.frame_index = 0
         self.animation_timer = 0
         self.animation_speed = 0.15
@@ -17,7 +17,6 @@ class Enemy:
         self.rect = self.image.get_rect(topleft=self.position)
 
     def update(self):
-        # Movimento automático
         offset = pygame.Vector2(0, 0)
         if self.direction == "up":
             offset.y = -self.speed
@@ -31,7 +30,6 @@ class Enemy:
         self.position += offset
         self.rect.topleft = self.position
 
-        # Animação
         self.animation_timer += self.animation_speed
         if self.animation_timer >= 1:
             self.animation_timer = 0

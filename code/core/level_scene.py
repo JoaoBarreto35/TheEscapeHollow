@@ -1,8 +1,7 @@
-# code/core/level_scene.py
 import pygame
 from code.entities.player import Player
 from code.core.map_builder import MapBuilder
-from code.entities.entity_mediator import EntityMediator
+from code.mechanics.entity_mediator import EntityMediator
 from code.mechanics.puzzle_mediator import PuzzleMediator
 from code.ui.tutorial_overlay import TutorialOverlay
 from code.ui.pause_menu import PauseMenu
@@ -11,6 +10,7 @@ from code.ui.hud import HUD
 from code.core.level_loader import load_level_components
 from code.data.levels import LevelsName, levelsHint
 from code.entities.secret_door import SecretDoor
+from code.ui.void_fall_transition import VoidFallTransition  # ✅ nova transição
 
 class LevelScene:
     def __init__(self, current_map, level_index=0, player_lives=3):
@@ -34,9 +34,11 @@ class LevelScene:
         self.map_builder = MapBuilder(self.tile_size, "assets/wall.png", "assets/floor.png")
         self.wall_rects = self.map_builder.get_wall_rects(current_map)
 
-        self.load_components()
         self.paused = False
         self.game_over = False
+        self.falling_scene = None  # ✅ controle da transição
+
+        self.load_components()
 
     def load_components(self):
         self.entities, self.triggers, self.targets = load_level_components(
@@ -78,13 +80,23 @@ class LevelScene:
             self.window.fill("black")
             self.map_builder.draw_map(self.window, self.current_map)
 
-            if not self.game_over and not self.paused:
+            if self.falling_scene:
+                self.falling_scene.update(dt)
+                self.falling_scene.draw(self.window)
+                if self.falling_scene.is_finished():
+                    self.falling_scene = None
+                    self.game_over = True
+
+            elif not self.game_over and not self.paused:
                 self.entity_mediator.update_all()
                 self.puzzle_mediator.update_all()
 
                 for entity in self.entities:
                     if isinstance(entity, Player) and entity.lives <= 0:
-                        self.game_over = True
+                        if entity.death_reason == "hole":
+                            self.falling_scene = VoidFallTransition(entity, self.font, self.width, self.height)
+                        else:
+                            self.game_over = True
                         break
 
                 if self.entity_mediator.level_complete:
@@ -95,7 +107,7 @@ class LevelScene:
                             else:
                                 return "next", entity.lives
 
-            if self.game_over:
+            elif self.game_over:
                 result = self.handle_game_over()
                 if result == "retry":
                     self.load_components()
@@ -108,7 +120,10 @@ class LevelScene:
             pygame.display.update()
 
     def handle_game_over(self):
-        menu = GameOverScreen(self.font, self.width, self.height, self.level_hint)
+        player = next((e for e in self.entities if isinstance(e, Player)), None)
+        death_reason = player.death_reason if player else "unknown"
+
+        menu = GameOverScreen(self.font, self.width, self.height, death_reason)
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
