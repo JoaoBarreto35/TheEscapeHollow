@@ -16,7 +16,7 @@ LevelsEvents = {
 
         {
             "trigger": (12, 13),
-            "targets": [(4, 4), (5, 13)]
+            "targets": [(4, 4), (6, 13)]
         },
         {
             "trigger": (2, 4),
@@ -27,6 +27,11 @@ LevelsEvents = {
 
 LevelsName = ['Ready?! Escape the Hollow', 'Wait… where’s the door?!', 'Turn Their Strength Against Them']
 
+levelsHint = [
+    "Bloqueie o inimigo com a pedra",
+    "Use a pedra para pegar a alavanca",
+    "Inimigos também ativam alavancas, sabia?"
+]
 levels = {
     "level_0": [
 
@@ -43,7 +48,7 @@ levels = {
         "WW.......W.....WW",
         "WW...H...WWW.H.WW",
         "WW...WWWWW.....WW",
-        "WW.W.W.........WW",
+        "WW.W.WC........WW",
         "WWP............XW",
         "WWWWWWWWWWWWWWWWW"
         "WWWWWWWWWWWWWWWWW",
@@ -73,8 +78,8 @@ levels = {
         'WWWWLW...V.....WW',
         'WWWW.W.WW.WWWW.WW',
         'WWWWSW....W.WV.WW',
-        'WWWW.W..R.R.WS.WW',
-        'WWWW.W....W.W..WW',
+        'WWWW.W..R.R.W..WW',
+        'WWWW.W....W.WS.WW',
         'WWWW.W..W.W.W..WW',
         'WWW..WWWW.W.W..WW',
         'WW..VWH.....W..WW',
@@ -82,7 +87,7 @@ levels = {
         'WW.WWWWWWWWWW.WWW',
         'WW.........HWLWWW',
         'WWWWWWW.WRWWWSWWW',
-        'WWP.......WX...WW',
+        'WWP........X...WW',
         'WWWWWWWWWWWWWWWWW',
         'WWWWWWWWWWWWWWWWW'
 

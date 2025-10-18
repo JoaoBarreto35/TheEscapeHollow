@@ -1,4 +1,6 @@
 import pygame
+
+from code.LifeChest import LifeChest
 from code.Player import Player
 from code.PushableRock import PushableRock
 from code.Enemy import Enemy
@@ -68,3 +70,10 @@ class EntityMediator:
                         transition_sound.play()
                         pygame.mixer.music.stop()
                         self.level_complete = True
+        for entity in self.entities:
+            if isinstance(entity, Player):
+                for other in self.entities:
+                    if isinstance(other, LifeChest) and not other.opened:
+                        if entity.rect.colliderect(other.rect):
+                            entity.lives = min(entity.lives + 1, 5)
+                            other.open()

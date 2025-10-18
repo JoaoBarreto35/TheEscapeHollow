@@ -1,6 +1,6 @@
 import pygame
 from code.SecretDoor import SecretDoor
-from code.Levels import LevelsName, LevelsEvents
+from code.Levels import LevelsName, LevelsEvents, levelsHint
 from code.MapBuilder import MapBuilder
 from code.EntityFactory import EntityFactory
 from code.EntityMediator import EntityMediator
@@ -9,8 +9,50 @@ from code.PuzzleMediator import PuzzleMediator
 from code.TargetFactory import TargetFactory
 from code.TriggerFactory import TriggerFactory
 from code.TutorialOverlay import TutorialOverlay
+from code.ui.PauseMenu import PauseMenu
 
-# 🎮 HUD: vidas e nome do level
+def show_transition_screen(level_name, screen_width=640, screen_height=480):
+    pygame.display.set_caption("Próxima fase")
+    window = pygame.display.set_mode((screen_width, screen_height))
+
+    # Fundo
+    try:
+        background = pygame.image.load("assets/ui/transition.png").convert()
+        background = pygame.transform.scale(background, (screen_width, screen_height))
+    except:
+        background = pygame.Surface((screen_width, screen_height))
+        background.fill((10, 10, 10))
+
+    # Fonte personalizada
+    try:
+        title_font = pygame.font.Font("assets/fonts/mystery.ttf", 20)
+    except:
+        title_font = pygame.font.SysFont("serif", 20)
+
+    # Texto da fase
+    title_text = title_font.render(level_name, True, (255, 255, 255))
+    title_x = (screen_width - title_text.get_width()) // 2
+    title_y = (screen_height - title_text.get_height()) // 2
+
+    clock = pygame.time.Clock()
+    start_time = pygame.time.get_ticks()
+
+    while True:
+        dt = clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "quit"
+            elif event.type == pygame.KEYDOWN:
+                return
+
+        if pygame.time.get_ticks() - start_time > 2000:
+            return
+
+        window.blit(background, (0, 0))
+        window.blit(title_text, (title_x, title_y))
+        pygame.display.update()
+
+
 def load_heart_images(tile_size):
     heart = pygame.image.load("assets/heart.png").convert_alpha()
     heart = pygame.transform.scale(heart, (tile_size - 5, tile_size - 5))
@@ -42,7 +84,6 @@ def draw_game_over(surface, font, width, height):
     surface.blit(retry, ((width - retry.get_width()) // 2, height // 2))
     surface.blit(menu, ((width - menu.get_width()) // 2, height // 2 + 40))
 
-# 🔁 Reset do mapa
 def reset_entities(current_map, tile_size):
     factory = EntityFactory(tile_size)
     entities = []
@@ -83,7 +124,6 @@ def reset_targets(current_map, tile_size, level_name):
                     targets.append(target)
     return targets
 
-# 🚀 Execução do level
 def run_level(current_map, level_index=0, player_lives=3):
     pygame.display.set_mode((1, 1))
     pygame.mixer.init()
@@ -106,6 +146,8 @@ def run_level(current_map, level_index=0, player_lives=3):
     wall_rects = map_builder.get_wall_rects(current_map)
 
     level_name = LevelsName[level_index]
+    level_hint = levelsHint[level_index]
+
     triggers = reset_triggers(current_map, tile_size, f"level_{level_index}")
     targets = reset_targets(current_map, tile_size, f"level_{level_index}")
     entities = reset_entities(current_map, tile_size)
@@ -117,12 +159,14 @@ def run_level(current_map, level_index=0, player_lives=3):
     entity_mediator = EntityMediator(entities, wall_rects)
     puzzle_mediator = PuzzleMediator(entities, triggers, targets, f"level_{level_index}")
     tutorial = TutorialOverlay("assets/ui/tutorial.png", 3000, (width, height))
+    pause_menu = PauseMenu(font, width, height, level_hint)
 
     for secret_door in targets:
         if isinstance(secret_door, SecretDoor):
             wall_rects.append(secret_door)
 
     game_over = False
+    paused = False
 
     while True:
         dt = clock.tick(60)
@@ -132,12 +176,21 @@ def run_level(current_map, level_index=0, player_lives=3):
                 return "quit"
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    return "menu"
+                    paused = not paused
+                elif paused:
+                    action = pause_menu.handle_event(event)
+                    if action == "Retomar":
+                        paused = False
+                    elif action == "Tutorial":
+                        paused = False
+                        tutorial = TutorialOverlay("assets/ui/tutorial.png", 3000, (width, height))
+                    elif action == "Sair":
+                        return "menu"
 
         window.fill("black")
         map_builder.draw_map(window, current_map)
 
-        if not game_over:
+        if not game_over and not paused:
             entity_mediator.update_all()
             puzzle_mediator.update_all()
 
@@ -149,8 +202,12 @@ def run_level(current_map, level_index=0, player_lives=3):
             if entity_mediator.level_complete:
                 for entity in entities:
                     if isinstance(entity, Player):
-                        return "next", entity.lives
-        else:
+                        if level_index == len(LevelsName) - 1:
+                            return "win"
+                        else:
+                            return "next", entity.lives
+
+        if game_over:
             draw_game_over(window, font, width, height)
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RETURN]:
@@ -184,5 +241,8 @@ def run_level(current_map, level_index=0, player_lives=3):
         if level_index == 0:
             tutorial.update()
             tutorial.draw(window)
+
+        if paused:
+            pause_menu.draw(window)
 
         pygame.display.update()
