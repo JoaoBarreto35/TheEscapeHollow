@@ -1,6 +1,6 @@
 from typing import Tuple, List
 import pygame
-from code.Target import Target  # ajuste o caminho conforme seu projeto
+from code.mechanics.Target import Target  # ajuste o caminho conforme seu projeto
 
 stone_drag_sound = pygame.mixer.Sound("assets/sfx/stone_drag.wav")
 stone_drag_sound.set_volume(0.1)

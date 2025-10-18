@@ -1,6 +1,6 @@
 import pygame
 
-from code.Settings import ROCK_PUSH_SPEED
+from code.data.Settings import ROCK_PUSH_SPEED
 
 stone_drag_sound = pygame.mixer.Sound("assets/sfx/stone_drag.wav")
 stone_drag_sound.set_volume(0.1)
@@ -43,7 +43,7 @@ class PushableRock:
             return False
 
         # Verifica colisão com inimigos
-        from code.Enemy import Enemy
+        from code.entities.Enemy import Enemy
         if any(new_rect.colliderect(e.rect) for e in other_entities if isinstance(e, Enemy)):
             return False
 

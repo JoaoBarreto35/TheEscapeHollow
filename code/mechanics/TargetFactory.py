@@ -1,7 +1,6 @@
 from typing import Tuple, List
 
-from code.PressurePlate import PressurePlate
-from code.SecretDoor import SecretDoor
+from code.entities.SecretDoor import SecretDoor
 
 
 class TargetFactory:

@@ -1,6 +1,6 @@
 import pygame
-from code.Entity import Entity
-from code.FloatingHeart import FloatingHeart
+from code.entities.Entity import Entity
+from code.ui.FloatingHeart import FloatingHeart
 
 class LifeChest(Entity):
     def __init__(self, position, tile_size):

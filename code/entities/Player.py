@@ -1,7 +1,7 @@
 import pygame
-from code.Entity import Entity
-from code.ImageLoader import load_player_spritesheet
-from code.Settings import PLAYER_NORMAL_SPEED
+from code.entities.Entity import Entity
+from code.core.ImageLoader import load_player_spritesheet
+from code.data.Settings import PLAYER_NORMAL_SPEED
 
 # Carrega som de passo
 step_sound = pygame.mixer.Sound("assets/sfx/step.wav")

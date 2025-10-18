@@ -1,6 +1,4 @@
-import pygame
-from code.Levels import LevelsEvents
-from code.SecretDoor import SecretDoor
+from code.data.Levels import LevelsEvents
 
 
 class PuzzleMediator:

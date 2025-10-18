@@ -1,13 +1,20 @@
 import sys
-
 import pygame
-from code.Levels import levels, LevelsName
-from code.Level import run_level, show_transition_screen
-from code.Menu import show_menu
-from code.ui.WinScreen import run_win_screen
+
+from code.data.Levels import levels, LevelsName
+from code.core.level_scene import LevelScene
+from code.ui.AboutScreen import show_about_screen
+from code.ui.Menu import show_menu
+from code.core.WinScreen import run_win_screen
+from code.ui.TransitionScreen import TransitionScreen
 
 def start_game():
     pygame.init()
+    pygame.mixer.init()
+    pygame.mixer.music.load("assets/music/menu_theme.mp3")
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1, start=15.0)
+
     game_state = "menu"
     current_level_index = 0
     player_lives = 3
@@ -19,16 +26,18 @@ def start_game():
                 break
             elif choice == "about":
                 show_about_screen()
-                game_state = "menu"
             elif choice == "play":
                 current_level_index = 0
                 player_lives = 3
                 game_state = "playing"
 
         elif game_state == "playing":
-            level_sequence = list(levels.keys())
-            current_map = levels[level_sequence[current_level_index]]
-            result = run_level(current_map, current_level_index, player_lives)
+            level_keys = list(levels.keys())
+            level_id = level_keys[current_level_index]
+            current_map = levels[level_id]
+
+            scene = LevelScene(current_map, current_level_index, player_lives)
+            result = scene.run()
 
             if isinstance(result, tuple):
                 status, player_lives = result
@@ -37,12 +46,11 @@ def start_game():
 
             if status == "next":
                 current_level_index += 1
-                if current_level_index < len(level_sequence):
-                    next_level_name = LevelsName[current_level_index]
-                    show_transition_screen(next_level_name)
+                if current_level_index < len(level_keys):
+                    next_name = LevelsName[current_level_index]
+                    TransitionScreen(next_name).run()
                 else:
                     game_state = "win"
-
             elif status == "menu":
                 game_state = "menu"
             elif status == "quit":
@@ -59,29 +67,3 @@ def start_game():
 
     pygame.quit()
     sys.exit()
-
-
-def show_about_screen():
-    screen = pygame.display.set_mode((640, 480))
-    font = pygame.font.SysFont(None, 28)
-    clock = pygame.time.Clock()
-
-    text_lines = [
-        "Escape the Hollow",
-        "Jogo criado por João",
-        "Explore, sobreviva e avance pelas fases!",
-        "Pressione qualquer tecla para voltar ao menu"
-    ]
-
-    while True:
-        screen.fill((10, 10, 10))
-        for i, line in enumerate(text_lines):
-            label = font.render(line, True, (255, 255, 255))
-            screen.blit(label, ((640 - label.get_width()) // 2, 150 + i * 40))
-
-        pygame.display.update()
-        clock.tick(60)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
-                return
