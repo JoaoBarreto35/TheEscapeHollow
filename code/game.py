@@ -1,12 +1,12 @@
 import sys
 import pygame
 
-from code.data.Levels import levels, LevelsName
+from code.data.levels import levels, LevelsName
 from code.core.level_scene import LevelScene
-from code.ui.AboutScreen import show_about_screen
-from code.ui.Menu import show_menu
-from code.core.WinScreen import run_win_screen
-from code.ui.TransitionScreen import TransitionScreen
+from code.ui.about_screen import show_about_screen
+from code.ui.menu import show_menu
+from code.ui.win_screen import WinScreen
+from code.ui.transition_screen import TransitionScreen
 
 def start_game():
     pygame.init()
@@ -59,7 +59,7 @@ def start_game():
                 game_state = "win"
 
         elif game_state == "win":
-            result = run_win_screen()
+            result = WinScreen().run()
             if result == "menu":
                 game_state = "menu"
             elif result == "quit":

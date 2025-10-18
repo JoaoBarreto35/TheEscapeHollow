@@ -1,7 +1,7 @@
-from code.entities.EntityFactory import EntityFactory
-from code.mechanics.TriggerFactory import TriggerFactory
-from code.mechanics.TargetFactory import TargetFactory
-from code.data.Levels import LevelsEvents
+from code.entities.entity_factory import EntityFactory
+from code.mechanics.trigger_factory import TriggerFactory
+from code.mechanics.target_factory import TargetFactory
+from code.data.levels import LevelsEvents
 
 def load_level_components(current_map, tile_size, level_name):
     entities = []

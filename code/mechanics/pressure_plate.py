@@ -1,6 +1,6 @@
 import pygame
 
-from code.mechanics.Trigger import Trigger
+from code.mechanics.trigger import Trigger
 
 
 class PressurePlate(Trigger):

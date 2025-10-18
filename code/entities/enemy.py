@@ -1,5 +1,5 @@
 import pygame
-from code.core.ImageLoader import load_player_spritesheet
+from code.core.image_loader import load_player_spritesheet
 
 class Enemy:
     def __init__(self, position, scale=1.8, patrol_axis="H"):

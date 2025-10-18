@@ -1,6 +1,6 @@
 from typing import Tuple, List
 
-from code.entities.SecretDoor import SecretDoor
+from code.entities.secret_door import SecretDoor
 
 
 class TargetFactory:

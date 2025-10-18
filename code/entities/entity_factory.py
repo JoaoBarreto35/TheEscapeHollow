@@ -1,8 +1,8 @@
-from code.entities.Enemy import Enemy
-from code.mechanics.LevelExit import LevelExit
-from code.entities.LifeChest import LifeChest
-from code.entities.Player import Player
-from code.entities.PushableRock import PushableRock
+from code.entities.enemy import Enemy
+from code.mechanics.level_exit import LevelExit
+from code.entities.life_chest import LifeChest
+from code.entities.player import Player
+from code.entities.pushable_rock import PushableRock
 
 
 # from code.PushableRock import PushableRock

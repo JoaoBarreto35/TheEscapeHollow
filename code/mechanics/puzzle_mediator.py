@@ -1,4 +1,4 @@
-from code.data.Levels import LevelsEvents
+from code.data.levels import LevelsEvents
 
 
 class PuzzleMediator:

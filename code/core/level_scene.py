@@ -1,16 +1,16 @@
 # code/core/level_scene.py
 import pygame
-from code.entities.Player import Player
-from code.core.MapBuilder import MapBuilder
-from code.entities.EntityMediator import EntityMediator
-from code.mechanics.PuzzleMediator import PuzzleMediator
-from code.ui.TutorialOverlay import TutorialOverlay
-from code.ui.PauseMenu import PauseMenu
-from code.ui.GameOverScren import GameOverScreen
-from code.ui.HUD import HUD
+from code.entities.player import Player
+from code.core.map_builder import MapBuilder
+from code.entities.entity_mediator import EntityMediator
+from code.mechanics.puzzle_mediator import PuzzleMediator
+from code.ui.tutorial_overlay import TutorialOverlay
+from code.ui.pause_menu import PauseMenu
+from code.ui.game_over_screen import GameOverScreen
+from code.ui.hud import HUD
 from code.core.level_loader import load_level_components
-from code.data.Levels import LevelsName, levelsHint
-from code.entities.SecretDoor import SecretDoor
+from code.data.levels import LevelsName, levelsHint
+from code.entities.secret_door import SecretDoor
 
 class LevelScene:
     def __init__(self, current_map, level_index=0, player_lives=3):
