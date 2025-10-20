@@ -2,6 +2,8 @@ import pygame
 from typing import Tuple, List, Union
 from code.mechanics.target import Target
 from code.core.image_loader import load_image
+from code.settings import TIME_SECRET_DOOR
+
 
 class SecretDoor(Target):
     def __init__(self, position: Tuple[int, int], size: Union[int, Tuple[int, int]], target_matrix: List[Tuple[int, int]]):
@@ -37,18 +39,18 @@ class SecretDoor(Target):
             if self.stone_drag_sound:
                 self.stone_drag_sound.play(0)
             self.active = True
-            self.open_timer = 2000
+            self.open_timer = TIME_SECRET_DOOR
+        else:
+            self.open_timer = TIME_SECRET_DOOR
 
     def update(self, dt: int):
         if self.active:
+            self.rect = pygame.Rect(self.position[0], self.position[1], 0, 0)
             self.open_timer -= dt
             if self.open_timer <= 0:
                 if self.stone_drag_sound:
                     self.stone_drag_sound.play(0)
                 self.active = False
-
-        if self.active:
-            self.rect = (0,0,0,0)
         else:
             self.rect = self.image.get_rect(topleft=self.position)
 

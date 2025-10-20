@@ -13,7 +13,10 @@ class MapBuilder:
         self.floor.set_colorkey(self.floor.get_at((0, 0)))
         self.floor = pygame.transform.scale(self.floor, (tile_size, tile_size))
 
+
+
     def draw_map(self, surface, level_map):
+
         for row_index, row in enumerate(level_map):
             for col_index, cell in enumerate(row):
                 x = col_index * self.tile_size
@@ -21,7 +24,8 @@ class MapBuilder:
                 if cell == "W":
                     surface.blit(self.wall, (x, y))
                 else:
-                        surface.blit(self.floor, (x, y))
+                    surface.blit(self.floor, (x, y))
+
 
     def get_wall_rects(self, level_map):
         wall_rects = []

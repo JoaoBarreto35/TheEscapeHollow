@@ -28,6 +28,7 @@ class EntityMediator:
             old_position = entity.position.copy()
             entity.update()
 
+
             # Verifica colisão com parede
             if any(entity.rect.colliderect(wall) for wall in self.wall_rects):
                 entity.position = old_position

@@ -4,6 +4,7 @@ from code.entities.hole_trap import HoleTrap
 from code.entities.secret_door import SecretDoor
 
 
+
 class TargetFactory:
     def __init__(self, tile_size):
         self.tile_size = tile_size

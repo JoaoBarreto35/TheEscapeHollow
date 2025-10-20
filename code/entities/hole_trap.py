@@ -2,6 +2,8 @@ import pygame
 from typing import Tuple, List, Union
 from code.mechanics.target import Target
 from code.core.image_loader import load_image
+from code.settings import TIME_HOLE_TRAP
+
 
 class HoleTrap(Target):
     def __init__(self, position: Tuple[int, int], size: Union[int, Tuple[int, int]], target_matrix: List[Tuple[int, int]]):
@@ -24,7 +26,9 @@ class HoleTrap(Target):
     def toggle(self, state: bool):
         if state and not self.active:
             self.active = True
-            self.open_timer = 2000
+            self.open_timer = TIME_HOLE_TRAP
+        else:
+            self.open_timer = TIME_HOLE_TRAP
 
     def update(self, dt: int):
         if self.active:

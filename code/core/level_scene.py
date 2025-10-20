@@ -10,10 +10,11 @@ from code.ui.hud import HUD
 from code.core.level_loader import load_level_components
 from code.data.levels import LevelsName, levelsHint
 from code.entities.secret_door import SecretDoor
-from code.ui.void_fall_transition import VoidFallTransition  # ✅ nova transição
+from code.ui.void_fall_transition import VoidFallTransition
 
 class LevelScene:
     def __init__(self, current_map, level_index=0, player_lives=3):
+
         self.level_index = level_index
         self.level_name = LevelsName[level_index]
         self.level_hint = levelsHint[level_index]
@@ -36,11 +37,15 @@ class LevelScene:
 
         self.paused = False
         self.game_over = False
-        self.falling_scene = None  # ✅ controle da transição
+        self.falling_scene = None
 
         self.load_components()
 
     def load_components(self):
+        # Recria os blocos de parede do mapa
+        self.wall_rects = self.map_builder.get_wall_rects(self.current_map)
+
+        # Carrega entidades, gatilhos e alvos
         self.entities, self.triggers, self.targets = load_level_components(
             self.current_map, self.tile_size, f"level_{self.level_index}"
         )
@@ -54,9 +59,11 @@ class LevelScene:
         self.tutorial = TutorialOverlay("assets/ui/tutorial.png", 3000, (self.width, self.height))
         self.pause_menu = PauseMenu(self.font, self.width, self.height, self.level_hint)
 
+        # Adiciona SecretDoor como obstáculo
         for target in self.targets:
             if isinstance(target, SecretDoor):
                 self.wall_rects.append(target)
+
 
     def run(self):
         while True:
@@ -141,6 +148,7 @@ class LevelScene:
             self.clock.tick(60)
 
     def draw(self, dt):
+
         for entity in self.entities:
             if isinstance(entity, Player):
                 self.hud.draw(self.window, entity, self.level_name)
@@ -155,6 +163,9 @@ class LevelScene:
 
         for entity in self.entities:
             entity.draw(self.window)
+
+
+
 
         if self.level_index == 0:
             self.tutorial.update()
