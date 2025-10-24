@@ -1,6 +1,19 @@
 # interface.py
+import inspect
+
 import pygame
-from code.settings import listar_simbolos  # ajuste se necessário
+
+from code.settings import MapSymbol
+
+
+# ajuste se necessário
+
+def listar_simbolos():
+    simbolos = []
+    for nome, valor in inspect.getmembers(MapSymbol):
+        if not nome.startswith("__") and isinstance(valor, str):
+            simbolos.append((nome, valor))
+    return simbolos
 
 def desenhar_interface(window, mapa, Triggers, trigger_selecionado, trigger_expandidos,
                        simbolo_selecionado, movendo_simbolo, old_move_l, old_move_c,
