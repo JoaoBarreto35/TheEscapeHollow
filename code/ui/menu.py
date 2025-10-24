@@ -23,7 +23,13 @@ def show_menu(screen_width=640, screen_height=480):
         background.fill((10, 10, 10))
 
     # Opções: (texto exibido, valor retornado)
-    options = [("Jogar", "play"), ("Sobre o jogo", "about"), ("Sair", "quit")]
+    # Opções: (texto exibido, valor retornado)
+    options = [
+        ("Jogar", "play"),
+        ("Editor de Mapas", "editor"),
+        ("Sobre o jogo", "about"),
+        ("Sair", "quit")
+    ]
     selected = 0
 
     clock = pygame.time.Clock()

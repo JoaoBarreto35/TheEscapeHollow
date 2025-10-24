@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from code.settings import MapSymbol
 from code.triggers.pressure_plate import PressurePlate
 
 
@@ -8,8 +9,8 @@ class TriggerFactory:
         self.tile_size = tile_size
 
     def create_trigger(self, symbol, position,triggerMatriz: Tuple[int, int]):
-
-        if symbol == "L":
-            return PressurePlate(position, self.tile_size,triggerMatriz)
-
-        return None
+        match symbol:
+            case MapSymbol.PRESSURE_PLATE:
+                return PressurePlate(position, self.tile_size,triggerMatriz)
+            case _:
+                return None

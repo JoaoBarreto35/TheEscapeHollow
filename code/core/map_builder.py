@@ -1,5 +1,7 @@
 import pygame
 
+from code.settings import MapSymbol
+
 
 class MapBuilder:
     def __init__(self, tile_size, wall_path, floor_path):
@@ -21,7 +23,7 @@ class MapBuilder:
             for col_index, cell in enumerate(row):
                 x = col_index * self.tile_size
                 y = row_index * self.tile_size
-                if cell == "W":
+                if cell == MapSymbol.WALL:
                     surface.blit(self.wall, (x, y))
                 else:
                     surface.blit(self.floor, (x, y))
@@ -31,7 +33,7 @@ class MapBuilder:
         wall_rects = []
         for row_index, row in enumerate(level_map):
             for col_index, cell in enumerate(row):
-                if cell == "W":
+                if cell == MapSymbol.WALL:
                     x = col_index * self.tile_size
                     y = row_index * self.tile_size
                     wall_rects.append(pygame.Rect(x, y, self.tile_size, self.tile_size))

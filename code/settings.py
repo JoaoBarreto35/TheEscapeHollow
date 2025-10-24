@@ -10,6 +10,20 @@ class DeathReason:
 #E
 ENEMY_SPEED = 2.5
 
+#M
+class MapSymbol:
+    ENEMY_HORIZONTAL = "H"
+    ENEMY_VERTICAL = "V"
+    FLOOR = "."
+    HOLE_TRAP = "T"
+    LEVEL_EXIT = "X"
+    LIFE_CHEST = "C"
+    PLAYER = "P"
+    PRESSURE_PLATE = "L"
+    PUSHABLE_ROCK = "R"
+    SECRET_DOOR = "S"
+    WALL = "W"
+
 # P
 PLAYER_NORMAL_SPEED = 2
 PLAYER_PUSHING_SPEED = 0.5
@@ -26,3 +40,16 @@ SCREEN_HEIGHT = 320
 
 TIME_SECRET_DOOR = 2000
 TIME_HOLE_TRAP = 100
+
+TYPES= {
+    MapSymbol.ENEMY_HORIZONTAL : "Entity",
+    MapSymbol.ENEMY_VERTICAL : "Entity",
+    MapSymbol.FLOOR : "Map",
+    MapSymbol.HOLE_TRAP : "Target",
+    MapSymbol.LEVEL_EXIT : "Entity",
+    MapSymbol.LIFE_CHEST : "Entity",
+    MapSymbol.PLAYER : "Entity",
+    MapSymbol.PRESSURE_PLATE : "Trigger",
+    MapSymbol.PUSHABLE_ROCK : "Entity",
+    MapSymbol.SECRET_DOOR : "Target",
+    MapSymbol.WALL : "Map"}

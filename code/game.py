@@ -1,8 +1,9 @@
 import sys
 import pygame
 
-from code.data.levels import levels, LevelsName
+from code.core.map_loader import MapLoader
 from code.core.level_scene import LevelScene
+from code.editor.editor_scene import run_editor
 from code.ui.about_screen import show_about_screen
 from code.ui.menu import show_menu
 from code.ui.win_screen import WinScreen
@@ -19,6 +20,9 @@ def start_game():
     current_level_index = 0
     player_lives = 3
 
+    map_loader = MapLoader()
+    level_keys = map_loader.list_levels()  # ['level_0', 'level_1', ...]
+
     while True:
         if game_state == "menu":
             choice = show_menu()
@@ -30,13 +34,20 @@ def start_game():
                 current_level_index = 0
                 player_lives = 3
                 game_state = "playing"
+            elif choice == "editor":
+
+                editor = run_editor()
+                result = editor.run()
+                if result == "menu":
+                    game_state = "menu"
+                elif result == "quit":
+                    break
+
+
 
         elif game_state == "playing":
-            level_keys = list(levels.keys())
             level_id = level_keys[current_level_index]
-            current_map = levels[level_id]
-
-            scene = LevelScene(current_map, current_level_index, player_lives)
+            scene = LevelScene(level_id, player_lives)
             result = scene.run()
 
             if isinstance(result, tuple):
@@ -47,8 +58,8 @@ def start_game():
             if status == "next":
                 current_level_index += 1
                 if current_level_index < len(level_keys):
-                    next_name = LevelsName[current_level_index]
-                    TransitionScreen(next_name).run()
+                    next_map = map_loader.load(level_keys[current_level_index])
+                    TransitionScreen(next_map.name).run()
                 else:
                     game_state = "win"
             elif status == "menu":

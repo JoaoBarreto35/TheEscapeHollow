@@ -1,4 +1,7 @@
 import pygame
+
+from code.core.map_loader import MapLoader
+from code.core.map import Map
 from code.entities.player import Player
 from code.core.map_builder import MapBuilder
 from code.mechanics.entity_mediator import EntityMediator
@@ -8,23 +11,23 @@ from code.ui.pause_menu import PauseMenu
 from code.ui.game_over_screen import GameOverScreen
 from code.ui.hud import HUD
 from code.core.level_loader import load_level_components
-from code.data.levels import LevelsName, levelsHint
 from code.entities.secret_door import SecretDoor
 from code.ui.void_fall_transition import VoidFallTransition
 
 class LevelScene:
-    def __init__(self, current_map, level_index=0, player_lives=3):
-
-        self.level_index = level_index
-        self.level_name = LevelsName[level_index]
-        self.level_hint = levelsHint[level_index]
-        self.current_map = current_map
+    def __init__(self, level_id: str, player_lives=3):
+        self.level_id = level_id
+        self.level_index = int(level_id.split("_")[1])
         self.player_lives = player_lives
+
+        # Carrega o mapa completo
+        self.map_loader = MapLoader()
+        self.level_data: Map = self.map_loader.load(level_id)
 
         dummy_player = Player((0, 0), scale=2)
         self.tile_size = dummy_player.image.get_width() + 5
-        self.width = len(current_map[0]) * self.tile_size
-        self.height = len(current_map) * self.tile_size
+        self.width = len(self.level_data.grid[0]) * self.tile_size
+        self.height = len(self.level_data.grid) * self.tile_size
 
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Escape the Hollow")
@@ -33,7 +36,7 @@ class LevelScene:
 
         self.hud = HUD(self.font, self.tile_size)
         self.map_builder = MapBuilder(self.tile_size, "assets/wall.png", "assets/floor.png")
-        self.wall_rects = self.map_builder.get_wall_rects(current_map)
+        self.wall_rects = self.map_builder.get_wall_rects(self.level_data.grid)
 
         self.paused = False
         self.game_over = False
@@ -42,12 +45,10 @@ class LevelScene:
         self.load_components()
 
     def load_components(self):
-        # Recria os blocos de parede do mapa
-        self.wall_rects = self.map_builder.get_wall_rects(self.current_map)
+        self.wall_rects = self.map_builder.get_wall_rects(self.level_data.grid)
 
-        # Carrega entidades, gatilhos e alvos
         self.entities, self.triggers, self.targets = load_level_components(
-            self.current_map, self.tile_size, f"level_{self.level_index}"
+            self.level_data.grid, self.tile_size, self.level_id
         )
 
         for entity in self.entities:
@@ -55,15 +56,13 @@ class LevelScene:
                 entity.lives = self.player_lives
 
         self.entity_mediator = EntityMediator(self.entities, self.wall_rects)
-        self.puzzle_mediator = PuzzleMediator(self.entities, self.triggers, self.targets, f"level_{self.level_index}")
+        self.puzzle_mediator = PuzzleMediator(self.entities, self.triggers, self.targets, self.level_id)
         self.tutorial = TutorialOverlay("assets/ui/tutorial.png", 3000, (self.width, self.height))
-        self.pause_menu = PauseMenu(self.font, self.width, self.height, self.level_hint)
+        self.pause_menu = PauseMenu(self.font, self.width, self.height, self.level_data.hint)
 
-        # Adiciona SecretDoor como obstáculo
         for target in self.targets:
             if isinstance(target, SecretDoor):
                 self.wall_rects.append(target)
-
 
     def run(self):
         while True:
@@ -85,7 +84,7 @@ class LevelScene:
                             return "menu"
 
             self.window.fill("black")
-            self.map_builder.draw_map(self.window, self.current_map)
+            self.map_builder.draw_map(self.window, self.level_data.grid)
 
             if self.falling_scene:
                 self.falling_scene.update(dt)
@@ -109,7 +108,7 @@ class LevelScene:
                 if self.entity_mediator.level_complete:
                     for entity in self.entities:
                         if isinstance(entity, Player):
-                            if self.level_index == len(LevelsName) - 1:
+                            if self.level_index == len(self.map_loader.load_names()) - 1:
                                 return "win"
                             else:
                                 return "next", entity.lives
@@ -142,16 +141,15 @@ class LevelScene:
                     return "menu"
 
             self.window.fill("black")
-            self.map_builder.draw_map(self.window, self.current_map)
+            self.map_builder.draw_map(self.window, self.level_data.grid)
             menu.draw(self.window)
             pygame.display.update()
             self.clock.tick(60)
 
     def draw(self, dt):
-
         for entity in self.entities:
             if isinstance(entity, Player):
-                self.hud.draw(self.window, entity, self.level_name)
+                self.hud.draw(self.window, entity, self.level_data.name)
 
         for trigger in self.triggers:
             trigger.update(self.entities)
@@ -163,9 +161,6 @@ class LevelScene:
 
         for entity in self.entities:
             entity.draw(self.window)
-
-
-
 
         if self.level_index == 0:
             self.tutorial.update()
