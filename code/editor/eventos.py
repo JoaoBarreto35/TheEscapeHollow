@@ -1,6 +1,4 @@
-# eventos.py
 import pygame
-from code.editor.salvar import salvar_nivel
 from code.settings import TYPES  # ajuste o caminho conforme seu projeto
 
 def processar_eventos(event, contexto):
@@ -18,21 +16,38 @@ def processar_eventos(event, contexto):
     grid_colunas = contexto["grid_colunas"]
     grid_linhas = contexto["grid_linhas"]
 
+    # Fecha o editor
     if event.type == pygame.QUIT:
         contexto["running"] = False
 
+    # Clique do mouse
     elif event.type == pygame.MOUSEBUTTONDOWN:
         x, y = event.pos
+        painel_x = grid_colunas * tile_size
 
+        # Verifica clique no campo de nome
+        if painel_x + 10 <= x <= painel_x + 260 and 10 <= y <= 40:
+            contexto["editando_nome"] = True
+            contexto["editando_dica"] = False
+            return
+
+        # Verifica clique no campo de dica
+        if painel_x + 10 <= x <= painel_x + 260 and 50 <= y <= 80:
+            contexto["editando_dica"] = True
+            contexto["editando_nome"] = False
+            return
+
+        # Botão salvar
         if botao_salvar_rect and botao_salvar_rect.collidepoint(x, y):
-            salvar_nivel(mapa, Triggers, "sem_nome", "sem_hint")
+            contexto["salvar_nivel"] = True
 
-        if event.button == 1:  # Clique esquerdo
-            if x < grid_colunas * tile_size:
-                coluna = x // tile_size
-                linha = y // tile_size
-                pos = (linha, coluna)
+        # Clique dentro do mapa
+        if x < grid_colunas * tile_size:
+            coluna = x // tile_size
+            linha = y // tile_size
+            pos = (linha, coluna)
 
+            if event.button == 1:  # Clique esquerdo
                 if trigger_selecionado:
                     if TYPES.get(mapa[linha][coluna]) == "Target":
                         if pos not in Triggers[trigger_selecionado]:
@@ -76,7 +91,23 @@ def processar_eventos(event, contexto):
                         contexto["old_move_l"] = linha
                         contexto["old_move_c"] = coluna
 
-            else:
+            elif event.button == 3:  # Clique direito
+                for trigger, targets in Triggers.items():
+                    if pos in targets:
+                        targets.remove(pos)
+                        print(f"Target {pos} removido do trigger {trigger}")
+
+                if pos in Triggers:
+                    del Triggers[pos]
+                    print(f"Trigger {pos} removido completamente")
+
+                if mapa[linha][coluna] not in ("P", "X"):
+                    mapa[linha][coluna] = "."
+                    print(f"Apagou célula ({linha}, {coluna})")
+
+        # Clique na interface lateral
+        else:
+            if event.button == 1:
                 for nome, valor, rect in botoes_simbolos:
                     if simbolo_selecionado == valor:
                         contexto["simbolo_selecionado"] = None
@@ -99,22 +130,19 @@ def processar_eventos(event, contexto):
                         contexto["movendo_simbolo"] = None
                         print(f"Trigger {trigger} {'expandido' if trigger_expandidos[trigger] else 'recolhido'}")
                     y_offset += 32 + len(targets) * 24 if trigger_expandidos.get(trigger, False) else 40
+    elif event.type == pygame.KEYDOWN:
+        if contexto.get("editando_nome"):
+            if event.key == pygame.K_BACKSPACE:
+                contexto["nome_nivel"] = contexto["nome_nivel"][:-1]
+            elif event.key == pygame.K_RETURN:
+                contexto["editando_nome"] = False
+            elif event.unicode.isprintable():
+                contexto["nome_nivel"] += event.unicode
 
-        elif event.button == 3:  # Clique direito
-            if x < grid_colunas * tile_size:
-                coluna = x // tile_size
-                linha = y // tile_size
-                pos = (linha, coluna)
-
-                for trigger, targets in Triggers.items():
-                    if pos in targets:
-                        targets.remove(pos)
-                        print(f"Target {pos} removido do trigger {trigger}")
-
-                if pos in Triggers:
-                    del Triggers[pos]
-                    print(f"Trigger {pos} removido completamente")
-
-                if mapa[linha][coluna] not in ("P", "X"):
-                    mapa[linha][coluna] = "."
-                    print(f"Apagou célula ({linha}, {coluna})")
+        elif contexto.get("editando_dica"):
+            if event.key == pygame.K_BACKSPACE:
+                contexto["dica_nivel"] = contexto["dica_nivel"][:-1]
+            elif event.key == pygame.K_RETURN:
+                contexto["editando_dica"] = False
+            elif event.unicode.isprintable():
+                contexto["dica_nivel"] += event.unicode

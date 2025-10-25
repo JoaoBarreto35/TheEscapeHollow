@@ -3,7 +3,8 @@ import pygame
 
 from code.core.map_loader import MapLoader
 from code.core.level_scene import LevelScene
-from code.editor.editor_scene import run_editor
+from code.editor.selecao_nivel import tela_selecao
+
 from code.ui.about_screen import show_about_screen
 from code.ui.menu import show_menu
 from code.ui.win_screen import WinScreen
@@ -36,8 +37,9 @@ def start_game():
                 game_state = "playing"
             elif choice == "editor":
 
-                editor = run_editor()
-                result = editor.run()
+
+
+                result = tela_selecao()
                 if result == "menu":
                     game_state = "menu"
                 elif result == "quit":

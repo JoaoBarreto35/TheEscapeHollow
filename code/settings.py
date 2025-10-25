@@ -23,6 +23,8 @@ class MapSymbol:
     PUSHABLE_ROCK = "R"
     SECRET_DOOR = "S"
     WALL = "W"
+    SOUND_SENSOR = "@"
+    SPIKES = "Y"
 
 # P
 PLAYER_NORMAL_SPEED = 2
@@ -52,4 +54,6 @@ TYPES= {
     MapSymbol.PRESSURE_PLATE : "Trigger",
     MapSymbol.PUSHABLE_ROCK : "Entity",
     MapSymbol.SECRET_DOOR : "Target",
-    MapSymbol.WALL : "Map"}
+    MapSymbol.WALL : "Map",
+    MapSymbol.SOUND_SENSOR : "Trigger",
+    MapSymbol.SPIKES : "Target"}

@@ -1,5 +1,6 @@
 import pygame
 
+from code.entities.spike_reverse import SpikeReverse
 from code.settings import DeathReason
 from code.entities.life_chest import LifeChest
 from code.entities.player import Player
@@ -79,6 +80,7 @@ class EntityMediator:
                             entity.take_damage()
                             self.damage_cooldown = 60
 
+
         # Verifica colisão entre jogador e saída do nível
         for entity in self.entities:
             if isinstance(entity, Player):
@@ -100,3 +102,4 @@ class EntityMediator:
                             # Concede uma vida ao jogador e abre o baú
                             entity.lives = min(entity.lives + 1, 5)
                             other.open()
+

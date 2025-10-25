@@ -10,6 +10,7 @@ class PuzzleMediator:
         self.targets = targets
         self.levelName = levelName
         self.links = self._load_links(levelName)
+        self.damage_cooldown = 0
 
     def _load_links(self, levelName):
         try:
@@ -27,6 +28,10 @@ class PuzzleMediator:
             return {}
 
     def update_all(self):
+
+        if self.damage_cooldown > 0:
+            self.damage_cooldown -= 1
+
         for trigger in self.triggers:
             trigger_pos = trigger.triggerMatriz
             if trigger_pos in self.links:
@@ -45,3 +50,8 @@ class PuzzleMediator:
                         if target.__class__.__name__ == "HoleTrap" and target.active:
                             entity.death_reason = DeathReason.HOLE
                             entity.lives = 0
+                        if target.__class__.__name__ == "SpikeReverse" and target.active:
+                            if self.damage_cooldown == 0:
+                                entity.death_reason = DeathReason.SPIKE
+                                entity.take_damage()
+                                self.damage_cooldown = 60

@@ -2,6 +2,7 @@ from typing import Tuple
 
 from code.settings import MapSymbol
 from code.triggers.pressure_plate import PressurePlate
+from code.triggers.sound_sensor import SoundSensor
 
 
 class TriggerFactory:
@@ -12,5 +13,7 @@ class TriggerFactory:
         match symbol:
             case MapSymbol.PRESSURE_PLATE:
                 return PressurePlate(position, self.tile_size,triggerMatriz)
+            case MapSymbol.SOUND_SENSOR:
+                return SoundSensor(position, self.tile_size,triggerMatriz)
             case _:
                 return None
