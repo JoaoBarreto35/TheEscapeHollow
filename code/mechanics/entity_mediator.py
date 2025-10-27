@@ -1,6 +1,6 @@
 import pygame
 
-from code.entities.spike_reverse import SpikeReverse
+from code.entities.spikes import Spikes
 from code.settings import DeathReason
 from code.entities.life_chest import LifeChest
 from code.entities.player import Player

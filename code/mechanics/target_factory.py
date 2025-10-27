@@ -2,7 +2,8 @@ from typing import Tuple, List
 
 from code.entities.hole_trap import HoleTrap
 from code.entities.secret_door import SecretDoor
-from code.entities.spike_reverse import SpikeReverse
+from code.entities.spikes import Spikes
+from code.entities.spikes_trap import SpikesTrap
 from code.settings import MapSymbol
 
 
@@ -18,7 +19,10 @@ class TargetFactory:
             case MapSymbol.HOLE_TRAP:
                 return HoleTrap(position, self.tile_size, targetMatriz)
             case MapSymbol.SPIKES:
-                return SpikeReverse(position, self.tile_size, targetMatriz)
+                return Spikes(position, self.tile_size, targetMatriz)
+            case MapSymbol.SPIKES_TRAP:
+                return SpikesTrap(position, self.tile_size, targetMatriz)
+
 
             case _:
                 return None

@@ -25,6 +25,7 @@ class MapSymbol:
     WALL = "W"
     SOUND_SENSOR = "@"
     SPIKES = "Y"
+    SPIKES_TRAP = "y"
 
 # P
 PLAYER_NORMAL_SPEED = 2
@@ -37,6 +38,7 @@ ROCK_PUSH_SPEED = 2.1
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 320
+SOUND_SENSOR_RAIO_TILES = 1.7
 
 #T
 
@@ -56,4 +58,6 @@ TYPES= {
     MapSymbol.SECRET_DOOR : "Target",
     MapSymbol.WALL : "Map",
     MapSymbol.SOUND_SENSOR : "Trigger",
-    MapSymbol.SPIKES : "Target"}
+    MapSymbol.SPIKES : "Target",
+    MapSymbol.SPIKES_TRAP : "Target",}
+

@@ -1,23 +1,19 @@
-# mapa.py
-
 def carregar_mapa(caminho):
-    import os, json
+    import os, json, re
 
     with open(caminho, "r", encoding="utf-8") as arquivo:
         linhas = arquivo.readlines()
         mapa = [list(linha.strip()) for linha in linhas]
 
-    # Extrai índice do nome do arquivo
     base = os.path.basename(caminho)
-    indice = int(base.split("_")[1].split(".")[0])
+    match = re.search(r"level_(\d+)\.txt", base)
+    indice = int(match.group(1)) if match else -1
 
-    # Caminhos dos arquivos auxiliares
     pasta = os.path.dirname(caminho)
     caminho_events = os.path.join(pasta, "events.json")
     caminho_names = os.path.join(pasta, "names.json")
     caminho_hints = os.path.join(pasta, "hints.json")
 
-    # Carrega triggers
     triggers = {}
     try:
         with open(caminho_events, "r", encoding="utf-8") as f:
@@ -29,7 +25,6 @@ def carregar_mapa(caminho):
     except Exception as e:
         print(f"⚠️ Erro ao carregar eventos: {e}")
 
-    # Carrega nome e dica
     try:
         with open(caminho_names, "r", encoding="utf-8") as f:
             nomes = json.load(f)
@@ -43,7 +38,7 @@ def carregar_mapa(caminho):
         dica = dicas[indice]
     except:
         dica = "sem_hint"
-
+        print(f'{nome} - {dica}')
     return mapa, triggers, nome, dica
 def salvar_mapa(mapa, caminho):
     with open(caminho, "w", encoding="utf-8") as arquivo:

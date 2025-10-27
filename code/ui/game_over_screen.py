@@ -29,7 +29,7 @@ class GameOverScreen:
         elif self.death_reason == DeathReason.TIMEOUT:
             return "O tempo acabou."
         elif self.death_reason == DeathReason.SPIKE:
-            return "Cuidado com os espinho..."
+            return "Cuidado com os espinhos..."
         else:
             return "Você foi derrotado."
 

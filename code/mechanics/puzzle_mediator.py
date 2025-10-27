@@ -41,6 +41,12 @@ class PuzzleMediator:
                             if target.targetMatriz in self.links[trigger_pos]:
                                 target.toggle(True)
                         break
+                    if trigger.__class__.__name__ == "SoundSensor" and trigger.is_pressed:
+                        for target in self.targets:
+                            if target.targetMatriz in self.links[trigger_pos]:
+                                target.toggle(True)
+                        break
+
 
         # Verifica colisões de Player com targets
         for entity in self.entities:
@@ -50,7 +56,12 @@ class PuzzleMediator:
                         if target.__class__.__name__ == "HoleTrap" and target.active:
                             entity.death_reason = DeathReason.HOLE
                             entity.lives = 0
-                        if target.__class__.__name__ == "SpikeReverse" and target.active:
+                        if target.__class__.__name__ == "Spikes" and target.active:
+                            if self.damage_cooldown == 0:
+                                entity.death_reason = DeathReason.SPIKE
+                                entity.take_damage()
+                                self.damage_cooldown = 60
+                        if target.__class__.__name__ == "SpikesTrap" and target.active:
                             if self.damage_cooldown == 0:
                                 entity.death_reason = DeathReason.SPIKE
                                 entity.take_damage()

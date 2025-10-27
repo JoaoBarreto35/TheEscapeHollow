@@ -1,6 +1,7 @@
 import inspect
 import pygame
-from code.settings import MapSymbol
+from code.settings import MapSymbol, SOUND_SENSOR_RAIO_TILES
+
 
 def listar_simbolos():
     return [
@@ -101,6 +102,20 @@ def desenhar_interface(window, contexto, fonte):
     y_offset = 20
     for trigger, targets in Triggers.items():
         rect_trigger = pygame.Rect(painel_x + 300, y_offset, 160, 32)
+        # 🎯 Visualização de raio do sound_sensor
+        simbolo_trigger = mapa[trigger[0]][trigger[1]]
+        if simbolo_trigger == MapSymbol.SOUND_SENSOR:
+            raio_px = SOUND_SENSOR_RAIO_TILES * tile_size
+            centro_x = trigger[1] * tile_size + tile_size // 2
+            centro_y = trigger[0] * tile_size + tile_size // 2
+
+            # Círculo de contorno
+            pygame.draw.circle(window, (255, 0, 0), (centro_x, centro_y), raio_px, 2)
+
+            # Círculo preenchido com transparência
+            overlay = pygame.Surface((raio_px * 2, raio_px * 2), pygame.SRCALPHA)
+            pygame.draw.circle(overlay, (255, 0, 0, 40), (raio_px, raio_px), raio_px)
+            window.blit(overlay, (centro_x - raio_px, centro_y - raio_px))
         cor_trigger = (255, 255, 100) if trigger == trigger_selecionado else (200, 220, 180)
         pygame.draw.rect(window, cor_trigger, rect_trigger)
         texto_trigger = fonte.render(f"{mapa[trigger[0]][trigger[1]]} {trigger}", True, (0, 0, 0))
