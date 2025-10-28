@@ -74,5 +74,3 @@ python main.py
 👨‍💻 Autor
 João — Desenvolvedor, designer de puzzles e criador do universo sombrio de Escape the Hollow.
 Feito com 💻 Python + 🎮 Pygame + 🧠 criatividade.
-
-Se quiser, posso te ajudar a gerar uma versão em inglês, criar badges pro GitHub, ou até montar uma capa visual com o nome do projeto. Esse README já tá pronto pra brilhar!
