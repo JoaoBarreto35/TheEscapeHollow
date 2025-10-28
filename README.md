@@ -1,76 +1,43 @@
-🧩 Dungeon Trigger Editor
-Um jogo 2D com editor de mapas e sistema de lógica entre sensores e armadilhas. Criado com Python e Pygame, o projeto permite construir fases interativas com elementos como espinhos animados, sensores de som, e conexões entre triggers e targets. Ideal pra puzzles, exploração e desafios táticos.
+🕹️ Escape the Hollow
+Escape the Hollow é um jogo de aventura e quebra-cabeça em um mundo sombrio e esquecido. Você controla um personagem preso em uma masmorra viva, cheia de armadilhas, sensores e enigmas. Cada sala é um desafio, cada passo pode ativar algo oculto — e só quem entende a lógica por trás dos símbolos consegue escapar.
 
-📸 Preview
-Imagens do jogo e do editor (adicione aqui screenshots como os que você já mandou)
+🌌 Sobre o jogo
+Você acorda em um corredor frio e silencioso. As paredes sussurram. Os espinhos esperam. O chão guarda segredos.
+Seu objetivo: sobreviver, decifrar e escapar.
+- Explore corredores medievais abandonados
+- Ative mecanismos com som, movimento ou toque
+- Evite armadilhas que surgem do chão
+- Decifre a lógica entre símbolos e conexões
+- Alcance a porta final e fuja da Hollow
 
+🎮 Mecânicas principais
+- Sensores de som: detectam movimento e ativam armadilhas
+- Espinhos animados: surgem do chão com tempo limitado
+- Triggers e targets: lógica visual entre elementos
+- Editor de mapas: crie suas próprias fases e desafios
+- HUD de vida: sobreviva aos perigos e mantenha seus corações
 
-🗂️ Estrutura do Projeto
-code/
-├── core/
-│   └── image_loader.py         # Carregamento de imagens
-├── mechanics/
-│   ├── target.py               # Classe base para targets
-│   ├── trigger.py              # Classe base para triggers
-│   ├── spikes_trap.py          # Espinhos animados
-│   └── sound_sensor.py         # Sensor de som com raio
-├── settings.py                 # Símbolos e constantes globais
-├── editor/
-│   └── interface.py            # Interface visual do editor
-assets/
-├── spikes.png
-├── sound_sensor_on.png
-├── sound_sensor_off.png
-└── sfx/
-    └── stone_drag.wav
-main.py                         # Loop principal do jogo/editor
+🧱 Estilo visual
+- Pixel art retrô com atmosfera sombria
+- Efeitos de luz azul, sombras e ambientação medieval
+- Interface clara e intuitiva no editor
+- Feedback visual de sensores e armadilhas
 
-
-
-🎮 Funcionalidades
-🔧 Editor de Mapas
-- Grade interativa com símbolos
-- Painel lateral com scroll e seleção
-- Campos de nome e dica do nível
-- Visualização de raio de sensores
-- Conexões visuais entre triggers e targets
-🎯 Sistema de Triggers
-- Triggers ativam targets com base em eventos
-- Conexões persistentes entre elementos
-- Visualização clara no editor
-🕳️ Armadilhas animadas
-- Espinhos surgem e recolhem com animação
-- Temporizador de duração ativa
-- Recolhimento automático
-- Som de ativação
-🔊 Sensor de Som
-- Detecta movimento de entidades dentro de um raio
-- Ativa targets ao detectar deslocamento
-- Colisão virtual com área de escuta
-- Visualização da aura no editor
-
-🚀 Como rodar
+🚀 Como jogar
 - Instale o Pygame:
 pip install pygame
-- Execute o jogo/editor:
+- Execute o jogo:
 python main.py
+- Use o editor para criar fases ou jogue os níveis prontos
 
-
-
-🧠 Como funciona
-- Cada célula do mapa contém um símbolo (MapSymbol) que representa um objeto
-- Triggers (como sensores) ativam targets (como espinhos) com base em lógica definida
-- O editor permite desenhar mapas e conectar elementos visualmente
-- O jogo interpreta essa lógica e executa animações, sons e efeitos
-
-🛠️ Futuras melhorias
+🛠️ Recursos em desenvolvimento
 - Inimigos com patrulha e IA simples
 - Novos tipos de armadilhas (lava, gelo, pistões)
 - Sistema de partículas e efeitos visuais
 - Exportação/importação de mapas
-- Suporte a múltiplos níveis e progressão
-- Modo de jogo com HUD e objetivos
+- Modo campanha com progressão de níveis
 
-👨‍💻 Autor
+👨‍💻 Criado por
 João — Desenvolvedor, designer de puzzles e criador do universo sombrio de Escape the Hollow.
 Feito com 💻 Python + 🎮 Pygame + 🧠 criatividade.
+
